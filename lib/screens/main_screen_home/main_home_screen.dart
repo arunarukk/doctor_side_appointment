@@ -1,4 +1,5 @@
 import 'package:doc_side_appoinment/get_controller/get_controller.dart';
+import 'package:doc_side_appoinment/resources/auth_method.dart';
 import 'package:doc_side_appoinment/screens/more_screen/more_screen.dart';
 import 'package:doc_side_appoinment/screens/patients_screen/patient_screen.dart';
 import 'package:doc_side_appoinment/screens/profile_screen/doctor_profile.dart';
@@ -34,14 +35,19 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   ];
 
   addData() async {
-    final statecontrol = Get.put(StateController());
-    await statecontrol.refreshUser();
-    statecontrol.update();
+    try {
+      final statecontrol = Get.put(StateController());
+
+      // await statecontrol.refreshUser();
+      statecontrol.update();
+    } catch (e) {
+      print('adddata mainscreen ${e.toString()}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // addData();
+    //addData();
     return Scaffold(
       bottomNavigationBar: NewBottomNavigationBar(),
       body: SafeArea(

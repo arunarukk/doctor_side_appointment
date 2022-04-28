@@ -1,9 +1,12 @@
 import 'package:doc_side_appoinment/constant_value/constant_colors.dart';
 import 'package:doc_side_appoinment/constant_value/constant_size.dart';
+import 'package:doc_side_appoinment/models/doc_appointment.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ReviewDetailScreen extends StatelessWidget {
-  const ReviewDetailScreen({Key? key}) : super(key: key);
+  DoctorAppointment data;
+  ReviewDetailScreen({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +80,7 @@ class ReviewDetailScreen extends StatelessWidget {
                           color: kGrey,
                           image: DecorationImage(
                             fit: BoxFit.cover,
-                            image: AssetImage(
-                              'assets/lukman.jpeg',
-                            ),
+                            image: NetworkImage(data.appoDetails.photoUrl),
                           ),
                         ),
                       ),
@@ -93,19 +94,32 @@ class ReviewDetailScreen extends StatelessWidget {
                         children: [
                           kHeight30,
                           kHeight10,
-                          Text('Rating & Feedbacks',
+                          Text('Rating & Feedback',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold)),
-                          kHeight20,
-                          Text("⭐⭐⭐⭐⭐", style: TextStyle(fontSize: 20)),
+                          kHeight10,
+                          RatingBar.builder(
+                            itemSize: 40,
+                            initialRating: data.appoDetails.rating,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            // itemPadding: EdgeInsets.symmetric(
+                            //     horizontal: 1.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {},
+                          ),
                           kHeight10,
                           Divider(
                             thickness: 1.0,
                             color: kBlack,
                           ),
                           kHeight10,
-                          Text(
-                              'Dr name •  is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries ',
+                          Text(data.appoDetails.review,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 5,
                               style: TextStyle(fontSize: 16)),
@@ -139,7 +153,7 @@ class ReviewDetailScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Name',
+                        data.appoDetails.name,
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -148,7 +162,7 @@ class ReviewDetailScreen extends StatelessWidget {
                       const SizedBox(
                         height: 8,
                       ),
-                      Text('Age',
+                      Text(data.appoDetails.age,
                           style: TextStyle(fontSize: 16, color: kWhite)),
                     ],
                   ),

@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_side_appoinment/models/doctor_model.dart';
 import 'package:doc_side_appoinment/resources/storage_methods.dart';
@@ -11,6 +10,8 @@ class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
+
+//get user details
 
   Future<Doctor> getUserDetails() async {
     User currentUser = _auth.currentUser!;
@@ -41,7 +42,7 @@ class AuthMethods {
           email: email,
           password: password,
         );
-        print(cred.user!.uid);
+        // print(cred.user!.uid);
 
         String photoUrl = await StorageMethods()
             .uploadImageToStorage('profilePics', file, false);
@@ -49,12 +50,17 @@ class AuthMethods {
         // add doctor to database
 
         Doctor doctor = Doctor(
-            userName: userName,
-            uid: cred.user!.uid,
-            photoUrl: photoUrl,
-            email: email,
-            phoneNumber: phoneNumber,
-            speciality: '');
+          userName: userName,
+          uid: cred.user!.uid,
+          photoUrl: photoUrl,
+          email: email,
+          phoneNumber: phoneNumber,
+          speciality: {},
+          about: '',
+          experience: '',
+          rating: 0,
+          patients: 0,
+        );
 
         _fireStore
             .collection('doctors')

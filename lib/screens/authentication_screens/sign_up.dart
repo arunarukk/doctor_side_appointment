@@ -47,9 +47,9 @@ class SignUpScreen extends StatelessWidget {
       String result = await AuthMethods().signUpDoctor(
         email: _emailController.text,
         password: _password.text,
-        userName: _userNameController.text,
+        userName: _userNameController.text.toLowerCase(),
         phoneNumber: _phoneNumber.text,
-        file: control._image!,
+        file: control.image!,
       );
       control.loading(false);
       if (result != 'Success') {
@@ -173,10 +173,10 @@ class SignUpScreen extends StatelessWidget {
                     children: [
                       GetBuilder<SignController>(
                         builder: ((controller) {
-                          return control._image != null
+                          return control.image != null
                               ? CircleAvatar(
                                   radius: 64,
-                                  backgroundImage: MemoryImage(control._image!),
+                                  backgroundImage: MemoryImage(control.image!),
                                   backgroundColor: Colors.red,
                                 )
                               : const CircleAvatar(
@@ -501,10 +501,10 @@ class SignUpScreen extends StatelessWidget {
 }
 
 class SignController extends GetxController {
-  Uint8List? _image;
+  Uint8List? image;
   bool? isLoading;
   void imageUpdate(Uint8List img) {
-    _image = img;
+    image = img;
     update();
   }
 

@@ -35,9 +35,14 @@ dependencies:
   firebase_storage: ^10.2.10
   flutter:
     sdk: flutter
+  flutter_rating_bar: ^4.0.0
   get: ^4.6.1
   image_picker: ^0.8.4+11
   intl: ^0.17.0
+  uuid: ^3.0.6
+  firebase_messaging: ^11.2.14
+  flutter_local_notifications: ^9.4.1
+  url_launcher: ^6.1.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0

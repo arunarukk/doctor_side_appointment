@@ -1,40 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Doctor {
+class Patients {
   final String email;
   final String uid;
   final String photoUrl;
   final String userName;
   final String phoneNumber;
-  final Map<String, dynamic> speciality;
-  final String about;
-  final String experience;
-  final double rating;
-  final int patients;
+  final String age;
+  final String gender;
 
-  const Doctor({
+  const Patients({
     required this.userName,
     required this.uid,
     required this.photoUrl,
     required this.email,
     required this.phoneNumber,
-    required this.speciality,
-    required this.about,
-    required this.experience,
-    required this.rating,
-    required this.patients,
+    required this.age,
+    required this.gender,
   });
 
-  // static Doctor fromSnap(DocumentSnapshot snap) {
+  // static Patients fromSnap(DocumentSnapshot snap) {
   //   var snapshot = snap.data() as Map<String, dynamic>;
 
-  //   return Doctor(
+  //   return Patients(
   //     userName: snapshot["userName"],
   //     uid: snapshot["uid"],
   //     email: snapshot["email"],
   //     photoUrl: snapshot["photoUrl"],
   //     phoneNumber: snapshot["phoneNumber"],
-  //     speciality: snapshot["speciality"],
+  //     age: snapshot["age"],
   //   );
   // }
 
@@ -44,27 +38,21 @@ class Doctor {
         "email": email,
         "photoUrl": photoUrl,
         "phoneNumber": phoneNumber,
-        "speciality": speciality,
-        "about": about,
-        "experience": experience,
-        "rating": rating,
-        "patients": patients,
+        "age": age,
+        "gender": gender,
       };
 
-  static Doctor fromSnapshot(DocumentSnapshot snapshot) {
+  static Patients fromSnapshot(DocumentSnapshot snapshot) {
     var snap = snapshot.data() as Map<String, dynamic>;
 
-    return Doctor(
+    return Patients(
       userName: snap['userName'],
       uid: snap['uid'],
       photoUrl: snap['photoUrl'],
       email: snap['email'],
       phoneNumber: snap['phoneNumber'],
-      speciality: snap['speciality'],
-      about: snap['about'],
-      experience: snap["experience"],
-      rating: snap['rating'],
-      patients: snap['patients'],
+      age: snap['age'],
+      gender: snap['gender'],
     );
   }
 }

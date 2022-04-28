@@ -1,6 +1,8 @@
 import 'package:doc_side_appoinment/constant_value/constant_colors.dart';
 import 'package:doc_side_appoinment/resources/auth_method.dart';
+import 'package:doc_side_appoinment/resources/data_methods.dart';
 import 'package:doc_side_appoinment/screens/authentication_screens/log_in.dart';
+import 'package:doc_side_appoinment/screens/more_screen/add_timing.dart';
 import 'package:doc_side_appoinment/screens/profile_screen/doctor_profile.dart';
 import 'package:doc_side_appoinment/widgets/appbar_wiget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -47,18 +49,20 @@ class MoreScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => DoctorProfileScreen()));
+                              builder: (context) =>
+                                  const DoctorProfileScreen()));
                     },
-                    title: Text(
+                    title: const Text(
                       "Dr name",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    leading: CircleAvatar(
-                        backgroundImage: AssetImage('assets/doc(10).png')),
-                    trailing: Icon(
+                    leading: const CircleAvatar(
+                        backgroundImage:
+                            const AssetImage('assets/doc(10).png')),
+                    trailing: const Icon(
                       Icons.edit,
                       color: Colors.white,
                     ),
@@ -111,7 +115,7 @@ class MoreScreen extends StatelessWidget {
                 //   ),
                 // ),
                 const SizedBox(height: 20.0),
-                Text(
+                const Text(
                   "Settings",
                   style: TextStyle(
                     fontSize: 20.0,
@@ -120,22 +124,37 @@ class MoreScreen extends StatelessWidget {
                   ),
                 ),
                 ListTile(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddTiming()));
+                  },
                   //  activeColor: Colors.purple,
                   contentPadding: const EdgeInsets.all(0),
+                  //value: true,
+                  title: const Text("Add timing"),
+                  trailing: const Icon(Icons.post_add),
+                  //onChanged: (val) {},
+                ),
+                const ListTile(
+                  //  activeColor: Colors.purple,
+                  contentPadding: EdgeInsets.all(0),
                   //value: true,
                   title: Text("Help"),
                   //onChanged: (val) {},
                 ),
                 ListTile(
+                  onTap: () {
+                    dataController.getPastApp();
+                  },
                   //  activeColor: Colors.purple,
-                  contentPadding: const EdgeInsets.all(0),
+                  contentPadding: EdgeInsets.all(0),
                   // value: false,
-                  title: Text("About"),
+                  title: const Text("About"),
                   //onChanged: null,
                 ),
-                ListTile(
+                const ListTile(
                   //activeColor: Colors.purple,
-                  contentPadding: const EdgeInsets.all(0),
+                  contentPadding: EdgeInsets.all(0),
                   // value: true,
                   title: Text("Privacy Policy"),
                   // onChanged: (val) {},
@@ -149,8 +168,8 @@ class MoreScreen extends StatelessWidget {
                 // ),
                 ListTile(
                   contentPadding: const EdgeInsets.all(0),
-                  title: Text('Logout'),
-                  trailing: Icon(Icons.logout_outlined),
+                  title: const Text('Logout'),
+                  trailing: const Icon(Icons.logout_outlined),
                   onTap: () {
                     print('logout clicked');
                     AuthMethods().signOut();

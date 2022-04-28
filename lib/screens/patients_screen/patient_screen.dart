@@ -1,9 +1,12 @@
 import 'package:doc_side_appoinment/constant_value/constant_colors.dart';
+import 'package:doc_side_appoinment/models/doc_appointment.dart';
+import 'package:doc_side_appoinment/resources/data_methods.dart';
 import 'package:doc_side_appoinment/screens/review_details.dart';
 import 'package:doc_side_appoinment/widgets/review_screen.dart';
 import 'package:doc_side_appoinment/screens/screen_home/patient_details.dart';
 import 'package:doc_side_appoinment/widgets/appbar_wiget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PatientScreen extends StatefulWidget {
   PatientScreen({
@@ -30,7 +33,7 @@ class _PatientScreenState extends State<PatientScreen>
       appBar: AppBar(
           automaticallyImplyLeading: false,
           title: Text(
-            'Appoinment',
+            'Patients',
             style: TextStyle(color: Colors.black),
           ),
           actions: [
@@ -127,44 +130,64 @@ class PatientList extends StatelessWidget {
 
   final ScrollController scrollController = ScrollController();
 
+  final dataControl = Get.put(DataController());
+
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        controller: scrollController,
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-        itemBuilder: (ctx, index) {
-          return Card(
-            color: kWhite,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: SizedBox(
-              height: 100,
-              child: Center(
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PatientAppointmentScreen()));
-                  },
-                  leading: CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.white,
-                    backgroundImage: AssetImage('assets/lukman.jpeg'),
-                  ),
-                  title: Text('Name'),
-                  subtitle: Text('Age'),
-                ),
+    return FutureBuilder<List<DoctorAppointment>>(
+      future: dataControl.getUpcomingApp(),
+      builder: (context, snapshot) => snapshot.data == null
+          ? Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(kBlue),
               ),
-            ),
-          );
-        },
-        separatorBuilder: (ctx, index) {
-          return const SizedBox(
-            height: 5,
-          );
-        },
-        itemCount: 10);
+            )
+          : ListView.separated(
+              controller: scrollController,
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+              itemBuilder: (ctx, index) {
+                final String patientPhoto =
+                    snapshot.data![index].appoDetails.photoUrl;
+                final String patientName =
+                    snapshot.data![index].appoDetails.name;
+                final String patientAge = snapshot.data![index].appoDetails.age;
+                final data = snapshot.data![index];
+                return Card(
+                  color: kWhite,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PatientAppointmentScreen(
+                                        data: data,
+                                      )));
+                        },
+                        leading: CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.white,
+                          backgroundImage: NetworkImage(patientPhoto),
+                        ),
+                        title: Text(patientName.capitalize!),
+                        subtitle: Text(patientAge),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (ctx, index) {
+                return const SizedBox(
+                  height: 5,
+                );
+              },
+              itemCount: snapshot.data!.length),
+    );
   }
 }
