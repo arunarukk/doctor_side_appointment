@@ -5,6 +5,7 @@ import 'package:doc_side_appoinment/screens/main_screen_home/main_home_screen.da
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 final notifyC = NotificationControl();
 void main() async {
@@ -33,43 +34,44 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     // StateController().refreshUser();
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        scaffoldBackgroundColor: kWhite,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.transparent,
-        ),
-        primarySwatch: Colors.blue,
-      ),
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            if (snapshot.hasData) {
-              return MainHomeScreen();
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('${snapshot.error}'),
-              );
-            } else {
-              return LogInScreen();
-            }
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: kBlack,
+    return Sizer(
+        builder: ((context, orientation, deviceType) => MaterialApp(
+              title: 'Flutter Demo',
+              theme: ThemeData(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                scaffoldBackgroundColor: kWhite,
+                appBarTheme: AppBarTheme(
+                  backgroundColor: Colors.transparent,
+                ),
+                primarySwatch: Colors.blue,
               ),
-            );
-          }
-          return LogInScreen();
-        },
-      ),
-      debugShowCheckedModeBanner: false,
-    );
+              home: StreamBuilder(
+                stream: FirebaseAuth.instance.authStateChanges(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    if (snapshot.hasData) {
+                      return MainHomeScreen();
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('${snapshot.error}'),
+                      );
+                    } else {
+                      return LogInScreen();
+                    }
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: kBlack,
+                      ),
+                    );
+                  }
+                  return LogInScreen();
+                },
+              ),
+              debugShowCheckedModeBanner: false,
+            )));
   }
 }

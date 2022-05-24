@@ -23,7 +23,7 @@ class MainHomeScreen extends StatefulWidget {
 class _MainHomeScreenState extends State<MainHomeScreen> {
   @override
   void initState() {
-    addData();
+    //addData();
     super.initState();
   }
 

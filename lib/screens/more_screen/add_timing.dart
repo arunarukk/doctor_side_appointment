@@ -3,7 +3,7 @@ import 'package:doc_side_appoinment/constant_value/constant_size.dart';
 import 'package:doc_side_appoinment/get_controller/get_controller.dart';
 import 'package:doc_side_appoinment/models/schedule.dart';
 import 'package:doc_side_appoinment/resources/data_methods.dart';
-import 'package:doc_side_appoinment/utils/alert_dialogue.dart';
+import 'package:doc_side_appoinment/utils/image_picker_method.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -149,6 +149,17 @@ class AddTiming extends StatelessWidget {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Container(
+                width: size * .8,
+                child: Text(
+                  'Note : Once appointment placed you cannot change the schedule entirely',
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
             SizedBox(
               height: size * .06,
               width: size * .4,
@@ -160,9 +171,9 @@ class AddTiming extends StatelessWidget {
                   // print(stateControl.ten);
                   // print(stateControl.four);
 
-                  print(stateControl.selectedDate);
                   if (stateControl.selectedDate == null) {
                   } else {
+                    print(stateControl.selectedDate);
                     String? isemty = await DataController()
                         .scheduleDetailsExisting(stateControl.selectedDate!);
                     if (isemty == null) {
@@ -181,6 +192,8 @@ class AddTiming extends StatelessWidget {
                           sixPm: stateControl.six,
                         ),
                       );
+                      showSnackBar(
+                          'Schedule added successfully', kGreen, context);
                     } else {
                       showMyDialog(context, isemty);
                     }
@@ -277,24 +290,31 @@ class AddTiming extends StatelessWidget {
           actions: [
             TextButton(
               child: Text('Confirm'),
-              onPressed: () {
-                DataController().updateScheduleDetails(
-                  schedule: Schedule(
-                    date: stateControl.selectedDate!,
-                    nineAm: stateControl.nine,
-                    tenAm: stateControl.ten,
-                    elevenAm: stateControl.eleven,
-                    twelvePm: stateControl.twel,
-                    onepm: stateControl.one,
-                    twoPm: stateControl.two,
-                    threePm: stateControl.three,
-                    fourPm: stateControl.four,
-                    fivePm: stateControl.five,
-                    sixPm: stateControl.six,
-                  ),
-                  did: did,
-                );
-                //Navigator.of(context).pop();
+              onPressed: () async {
+                bool result = await DataController().updateScheduleDetails(
+                    schedule: Schedule(
+                      date: stateControl.selectedDate!,
+                      nineAm: stateControl.nine,
+                      tenAm: stateControl.ten,
+                      elevenAm: stateControl.eleven,
+                      twelvePm: stateControl.twel,
+                      onepm: stateControl.one,
+                      twoPm: stateControl.two,
+                      threePm: stateControl.three,
+                      fourPm: stateControl.four,
+                      fivePm: stateControl.five,
+                      sixPm: stateControl.six,
+                    ),
+                    did: did,
+                    ctx: context);
+                if (result.reactive.status.isLoading) {}
+                if (result == true) {
+                  showSnackBar(
+                      'Cannot upadte! You have an appointment', kRed, context);
+                } else {
+                  showSnackBar('Updated successfully', kGreen, context);
+                }
+                Navigator.of(context).pop();
               },
             ),
             TextButton(

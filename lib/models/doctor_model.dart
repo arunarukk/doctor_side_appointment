@@ -55,16 +55,16 @@ class Doctor {
     var snap = snapshot.data() as Map<String, dynamic>;
 
     return Doctor(
-      userName: snap['userName'],
-      uid: snap['uid'],
-      photoUrl: snap['photoUrl'],
-      email: snap['email'],
-      phoneNumber: snap['phoneNumber'],
-      speciality: snap['speciality'],
-      about: snap['about'],
-      experience: snap["experience"],
-      rating: snap['rating'],
-      patients: snap['patients'],
+      userName: snap['userName'] ?? '',
+      uid: snap['uid'] ?? '',
+      photoUrl: snap['photoUrl'] ?? '',
+      email: snap['email'] ?? '',
+      phoneNumber: snap['phoneNumber'] ?? '',
+      speciality: snap['speciality'] ?? {},
+      about: snap['about'] ?? '',
+      experience: snap["experience"] ?? '',
+      rating: snap['rating'] ?? 0.0,
+      patients: snap['patients'] ?? 0,
     );
   }
 }

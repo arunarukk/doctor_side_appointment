@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Appointment {
@@ -18,23 +16,25 @@ class Appointment {
   final String scheduleID;
   final double rating;
   final String review;
-  Appointment({
-    required this.date,
-    required this.time,
-    required this.patientId,
-    required this.doctorId,
-    required this.bookingId,
-    required this.gender,
-    required this.name,
-    required this.phoneNumber,
-    required this.age,
-    required this.problem,
-    required this.payment,
-    required this.photoUrl,
-    required this.scheduleID,
-    required this.rating,
-    required this.review,
-  });
+  final String status;
+
+  Appointment(
+      {required this.date,
+      required this.time,
+      required this.patientId,
+      required this.doctorId,
+      required this.bookingId,
+      required this.gender,
+      required this.name,
+      required this.phoneNumber,
+      required this.age,
+      required this.problem,
+      required this.payment,
+      required this.photoUrl,
+      required this.scheduleID,
+      required this.rating,
+      required this.review,
+      required this.status});
 
   Map<String, dynamic> toMap() {
     return {
@@ -53,6 +53,7 @@ class Appointment {
       'scheduleID': scheduleID,
       'rating': rating,
       'review': review,
+      'status': status,
     };
   }
 
@@ -73,6 +74,7 @@ class Appointment {
       scheduleID: map['scheduleID'] ?? '',
       rating: map['rating'] ?? 0.0,
       review: map['review'] ?? '',
+      status: map['status'] ?? '',
     );
   }
 }

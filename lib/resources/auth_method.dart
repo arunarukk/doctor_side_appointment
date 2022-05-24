@@ -77,6 +77,60 @@ class AuthMethods {
     }
     return result;
   }
+  //=====================sign up with phone number ============
+
+  otpSingUp({
+    required String email,
+    required String uid,
+    required String userName,
+    required String phoneNumber,
+    required Uint8List file,
+  }) async {
+    String result = 'Something went wrong';
+    try {
+      if (email.isNotEmpty ||
+         
+          userName.isNotEmpty ||
+          phoneNumber.isNotEmpty) {
+       
+
+       
+        // print(cred.user!.uid);
+
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage('profilePics', file, false);
+
+        // add doctor to database
+
+        Doctor doctor = Doctor(
+          userName: userName,
+          uid: uid,
+          photoUrl: photoUrl,
+          email: email,
+          phoneNumber: phoneNumber,
+          speciality: {},
+          about: '',
+          experience: '',
+          rating: 0,
+          patients: 0,
+        );
+
+        _fireStore
+            .collection('doctors')
+            .doc(uid)
+            .set(doctor.toJson());
+        result = 'Success';
+      }
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'invalid-email') {
+        result = 'The email is badly formatted.';
+      }
+    } catch (err) {
+      result = err.toString();
+    }
+    return result;
+  }
+
   // logging in user
 
   Future<String> logInUser({
