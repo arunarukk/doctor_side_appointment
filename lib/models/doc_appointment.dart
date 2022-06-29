@@ -1,6 +1,6 @@
 
 
-import 'package:doc_side_appoinment/models/Patients_model.dart';
+import 'package:doc_side_appoinment/models/patients_model.dart';
 
 import 'appointment_model.dart';
 

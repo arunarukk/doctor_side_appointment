@@ -10,14 +10,12 @@ class ReviewDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final args = ModalRoute.of(context)!.settings.arguments as Doctor;
-    final size = MediaQuery.of(context).size.height;
+     final size = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        // backgroundColor: Colors.transparent,
-        title: Text(
+        title: const Text(
           'Patient profile',
-          style: TextStyle(color: kBlack),
+          style:  TextStyle(color: kBlack),
         ),
         centerTitle: true,
         elevation: 0,
@@ -25,22 +23,13 @@ class ReviewDetailScreen extends StatelessWidget {
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: kBlack,
             )),
-        //automaticallyImplyLeading: true,
       ),
       body: Container(
-        // decoration: const BoxDecoration(
-        //     gradient: LinearGradient(
-        //         begin: Alignment.topLeft,
-        //         end: Alignment.bottomRight,
-        //         colors: [
-        //       Color.fromARGB(255, 0, 162, 255),
-        //       Color.fromARGB(255, 60, 39, 176)
-        //     ])),
-        height: double.infinity,
+         height: double.infinity,
         width: double.infinity,
         child: SingleChildScrollView(
           child: Stack(
@@ -48,33 +37,12 @@ class ReviewDetailScreen extends StatelessWidget {
               Positioned(
                 child: Column(
                   children: [
-                    // Hero(
-                    //   tag: 'assets/lukman.jpeg',
-                    //   child: Material(
-                    //       type: MaterialType.transparency,
-                    //       child: Container(
-                    //         alignment: Alignment.topCenter,
-                    //         height: size * .5,
-                    //         decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.only(
-                    //               bottomLeft: Radius.circular(50),
-                    //               bottomRight: Radius.circular(50)),
-                    //           color: kGrey,
-                    //           image: DecorationImage(
-                    //             fit: BoxFit.cover,
-                    //             image: AssetImage(
-                    //               'assets/lukman.jpeg',
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       )),
-                    // ),
-                    SizedBox(
+                     SizedBox(
                       height: size * .5,
                       child: Container(
                         height: size * .2,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(50),
                               bottomRight: Radius.circular(50)),
                           color: kGrey,
@@ -86,7 +54,6 @@ class ReviewDetailScreen extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      //color: Colors.grey,
                       padding: const EdgeInsets.all(16),
                       height: MediaQuery.of(context).size.height * 0.5,
                       child: Column(
@@ -94,7 +61,7 @@ class ReviewDetailScreen extends StatelessWidget {
                         children: [
                           kHeight30,
                           kHeight10,
-                          Text('Rating & Feedback',
+                          const Text('Rating & Feedback',
                               style: TextStyle(
                                   fontSize: 20, fontWeight: FontWeight.bold)),
                           kHeight10,
@@ -105,16 +72,14 @@ class ReviewDetailScreen extends StatelessWidget {
                             direction: Axis.horizontal,
                             allowHalfRating: true,
                             itemCount: 5,
-                            // itemPadding: EdgeInsets.symmetric(
-                            //     horizontal: 1.0),
-                            itemBuilder: (context, _) => Icon(
+                           itemBuilder: (context, _) => const Icon(
                               Icons.star,
                               color: Colors.amber,
                             ),
                             onRatingUpdate: (rating) {},
                           ),
                           kHeight10,
-                          Divider(
+                          const Divider(
                             thickness: 1.0,
                             color: kBlack,
                           ),
@@ -122,17 +87,15 @@ class ReviewDetailScreen extends StatelessWidget {
                           Text(data.appoDetails.review,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 5,
-                              style: TextStyle(fontSize: 16)),
+                              style: const TextStyle(fontSize: 16)),
                           const SizedBox(
                             height: 16,
                           ),
-                          // kHeight10,
-                          Divider(
+                          const Divider(
                             thickness: 1.0,
                             color: kBlack,
                           ),
-                          //const Spacer(),
-                        ],
+                          ],
                       ),
                     ),
                   ],
@@ -142,7 +105,6 @@ class ReviewDetailScreen extends StatelessWidget {
                 bottom: size * .45,
                 left: 75,
                 child: Container(
-                  // color: kGrey,
                   height: size * 0.1,
                   width: size * 0.3,
                   decoration: BoxDecoration(
@@ -152,18 +114,24 @@ class ReviewDetailScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        data.appoDetails.name,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: kWhite),
+                      SizedBox(
+                        width: size * .48,
+                        child: Center(
+                          child: Text(
+                            data.appoDetails.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: kWhite),
+                          ),
+                        ),
                       ),
                       const SizedBox(
                         height: 8,
                       ),
                       Text(data.appoDetails.age,
-                          style: TextStyle(fontSize: 16, color: kWhite)),
+                          style: const TextStyle(fontSize: 16, color: kWhite)),
                     ],
                   ),
                 ),

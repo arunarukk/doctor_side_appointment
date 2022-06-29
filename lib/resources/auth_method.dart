@@ -5,9 +5,7 @@ import 'package:doc_side_appoinment/resources/storage_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthMethods {
-  // final FirebaseAuth auth = FirebaseAuth.instanceFor(app: app);
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
@@ -15,10 +13,10 @@ class AuthMethods {
 
   Future<Doctor> getUserDetails() async {
     User currentUser = _auth.currentUser!;
-    DocumentSnapshot snapshot =
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
         await _fireStore.collection('doctors').doc(currentUser.uid).get();
 
-    return Doctor.fromSnapshot(snapshot);
+    return Doctor.fromMap(snapshot.data()!);
   }
 
   //sign up doctor
@@ -42,13 +40,10 @@ class AuthMethods {
           email: email,
           password: password,
         );
-        // print(cred.user!.uid);
+        String photoUrl = await StorageMethods().uploadImageToStorages(file);
 
-        String photoUrl = await StorageMethods()
-            .uploadImageToStorage('profilePics', file, false);
-
+      
         // add doctor to database
-
         Doctor doctor = Doctor(
           userName: userName,
           uid: cred.user!.uid,
@@ -60,17 +55,20 @@ class AuthMethods {
           experience: '',
           rating: 0,
           patients: 0,
+          qualifications: '',
+          address: '',
         );
-
-        _fireStore
+        await _fireStore
             .collection('doctors')
             .doc(cred.user!.uid)
-            .set(doctor.toJson());
+            .set(doctor.toMap());
         result = 'Success';
       }
     } on FirebaseAuthException catch (err) {
       if (err.code == 'invalid-email') {
         result = 'The email is badly formatted.';
+      } else if (err.code == 'email-already-in-use') {
+        result = 'The email is already exist.';
       }
     } catch (err) {
       result = err.toString();
@@ -88,19 +86,9 @@ class AuthMethods {
   }) async {
     String result = 'Something went wrong';
     try {
-      if (email.isNotEmpty ||
-         
-          userName.isNotEmpty ||
-          phoneNumber.isNotEmpty) {
-       
-
-       
-        // print(cred.user!.uid);
-
-        String photoUrl = await StorageMethods()
+      if (email.isNotEmpty || userName.isNotEmpty || phoneNumber.isNotEmpty) {
+         String photoUrl = await StorageMethods()
             .uploadImageToStorage('profilePics', file, false);
-
-        // add doctor to database
 
         Doctor doctor = Doctor(
           userName: userName,
@@ -113,12 +101,11 @@ class AuthMethods {
           experience: '',
           rating: 0,
           patients: 0,
+          qualifications: '',
+          address: '',
         );
 
-        _fireStore
-            .collection('doctors')
-            .doc(uid)
-            .set(doctor.toJson());
+        _fireStore.collection('doctors').doc(uid).set(doctor.toMap());
         result = 'Success';
       }
     } on FirebaseAuthException catch (err) {

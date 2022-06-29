@@ -1,4 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
+
 
 class Doctor {
   final String email;
@@ -11,6 +12,8 @@ class Doctor {
   final String experience;
   final double rating;
   final int patients;
+  final String qualifications;
+  final String address;
 
   const Doctor({
     required this.userName,
@@ -23,48 +26,46 @@ class Doctor {
     required this.experience,
     required this.rating,
     required this.patients,
+    required this.qualifications,
+    required this.address,
   });
 
-  // static Doctor fromSnap(DocumentSnapshot snap) {
-  //   var snapshot = snap.data() as Map<String, dynamic>;
+ 
+  Map<String, dynamic> toMap() {
+    return {
+      'email': email,
+      'uid': uid,
+      'photoUrl': photoUrl,
+      'userName': userName,
+      'phoneNumber': phoneNumber,
+      'speciality': speciality,
+      'about': about,
+      'experience': experience,
+      'rating': rating,
+      'patients': patients,
+      'qualifications': qualifications,
+      'address': address,
+    };
+  }
 
-  //   return Doctor(
-  //     userName: snapshot["userName"],
-  //     uid: snapshot["uid"],
-  //     email: snapshot["email"],
-  //     photoUrl: snapshot["photoUrl"],
-  //     phoneNumber: snapshot["phoneNumber"],
-  //     speciality: snapshot["speciality"],
-  //   );
-  // }
-
-  Map<String, dynamic> toJson() => {
-        "userName": userName,
-        "uid": uid,
-        "email": email,
-        "photoUrl": photoUrl,
-        "phoneNumber": phoneNumber,
-        "speciality": speciality,
-        "about": about,
-        "experience": experience,
-        "rating": rating,
-        "patients": patients,
-      };
-
-  static Doctor fromSnapshot(DocumentSnapshot snapshot) {
-    var snap = snapshot.data() as Map<String, dynamic>;
-
+  factory Doctor.fromMap(Map<String, dynamic> map) {
     return Doctor(
-      userName: snap['userName'] ?? '',
-      uid: snap['uid'] ?? '',
-      photoUrl: snap['photoUrl'] ?? '',
-      email: snap['email'] ?? '',
-      phoneNumber: snap['phoneNumber'] ?? '',
-      speciality: snap['speciality'] ?? {},
-      about: snap['about'] ?? '',
-      experience: snap["experience"] ?? '',
-      rating: snap['rating'] ?? 0.0,
-      patients: snap['patients'] ?? 0,
+      email: map['email'] ?? '',
+      uid: map['uid'] ?? '',
+      photoUrl: map['photoUrl'] ?? '',
+      userName: map['userName'] ?? '',
+      phoneNumber: map['phoneNumber'] ?? '',
+      speciality: Map<String, dynamic>.from(map['speciality']),
+      about: map['about'] ?? '',
+      experience: map['experience'] ?? '',
+      rating: map['rating']?.toDouble() ?? 0.0,
+      patients: map['patients']?.toInt() ?? 0,
+      qualifications: map['qualifications'] ?? '',
+      address: map['address'] ?? '',
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory Doctor.fromJson(String source) => Doctor.fromMap(json.decode(source));
 }

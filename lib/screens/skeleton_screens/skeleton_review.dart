@@ -7,13 +7,12 @@ class SkeletonReview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.height;
     return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: 8,
       itemBuilder: (context, index) => Container(
         padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-        decoration: BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(color: Colors.white),
         child: SkeletonItem(
             child: Column(
           children: [
@@ -22,15 +21,15 @@ class SkeletonReview extends StatelessWidget {
                 SkeletonAvatar(
                   style: SkeletonAvatarStyle(
                       shape: BoxShape.rectangle,
-                      width: size * .13,
-                      height: size * .13,
-                      borderRadius: BorderRadius.all(Radius.circular(15))),
+                      width: 26.w,
+                      height: 13.h,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(15))),
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 1.h),
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SkeletonParagraph(
                         style: SkeletonParagraphStyle(
@@ -38,10 +37,10 @@ class SkeletonReview extends StatelessWidget {
                             spacing: 25,
                             lineStyle: SkeletonLineStyle(
                               randomLength: true,
-                              height: 10,
+                              height: 1.2.h,
                               borderRadius: BorderRadius.circular(8),
-                              minLength: size / 9,
-                              maxLength: size / 8,
+                              minLength: 25.w,
+                              maxLength: 26.w,
                             )),
                       ),
                       SkeletonParagraph(
@@ -50,14 +49,14 @@ class SkeletonReview extends StatelessWidget {
                             spacing: 25,
                             lineStyle: SkeletonLineStyle(
                               randomLength: true,
-                              height: 10,
+                              height: 1.2.h,
                               borderRadius: BorderRadius.circular(8),
-                              minLength: size / 11,
-                              maxLength: size / 10,
+                              minLength: 20.w,
+                              maxLength: 21.w,
                             )),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 1.h,
                       ),
                       SkeletonParagraph(
                         style: SkeletonParagraphStyle(
@@ -65,10 +64,10 @@ class SkeletonReview extends StatelessWidget {
                             spacing: 25,
                             lineStyle: SkeletonLineStyle(
                               randomLength: true,
-                              height: 22,
+                              height: 3.h,
                               borderRadius: BorderRadius.circular(8),
-                              minLength: size / 7,
-                              maxLength: size / 6,
+                              minLength: 28.w,
+                              maxLength: 29.w,
                             )),
                       ),
                     ],

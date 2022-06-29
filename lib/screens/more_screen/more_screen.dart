@@ -1,38 +1,34 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:doc_side_appoinment/constant_value/constant_colors.dart';
+import 'package:doc_side_appoinment/models/doctor_model.dart';
 import 'package:doc_side_appoinment/resources/auth_method.dart';
-import 'package:doc_side_appoinment/resources/data_methods.dart';
 import 'package:doc_side_appoinment/screens/authentication_screens/log_in.dart';
+import 'package:doc_side_appoinment/screens/main_screen_home/main_home_screen.dart';
 import 'package:doc_side_appoinment/screens/more_screen/add_timing.dart';
 import 'package:doc_side_appoinment/screens/profile_screen/doctor_profile.dart';
 import 'package:doc_side_appoinment/widgets/appbar_wiget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:doc_side_appoinment/widgets/connection_lost.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../get_controller/get_controller.dart';
 
 class MoreScreen extends StatelessWidget {
-  const MoreScreen({Key? key}) : super(key: key);
+  MoreScreen({Key? key}) : super(key: key);
+  final Uri _url = Uri.parse(
+      'https://www.privacypolicies.com/live/865cfcc5-fe55-4100-af27-4b88bda6c477');
 
-  // static final String path = "lib/src/pages/settings/settings1.dart";
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _dark = false;
-  // }
-
-  // Brightness _getBrightness() {
-  //   return _dark ? Brightness.dark : Brightness.light;
-  // }
+  void _launchUrl() async {
+    if (!await launchUrl(_url)) throw 'Could not launch $_url';
+  }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.height;
-    stateControl.refreshUser();
+    stateControl.getUserProfileDetails();
     return Scaffold(
-      // backgroundColor: _dark ? null : Colors.grey.shade200,
       appBar: const PreferredSize(
           child: AppBarWidget(title: 'More'),
           preferredSize: Size.fromHeight(60)),
@@ -52,11 +48,31 @@ class MoreScreen extends StatelessWidget {
                         GetBuilder<StateController>(
                           init: StateController(),
                           builder: (state) {
-                            return state.user == null
-                                ? Center(
-                                    child: Text('Something went wrong'),
-                                  )
-                                : Card(
+                            return StreamBuilder<Doctor>(
+                                stream: state.getUserProfileDetails(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                      child: CupertinoActivityIndicator(
+                                        color: kBlack,
+                                      ),
+                                    );
+                                  }
+                                  if (snapshot.data == null) {
+                                    return const Text(
+                                      'Hola',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: kBlack,
+                                      ),
+                                    );
+                                  }
+
+                                  final userName = snapshot.data!.userName;
+                                  final photoUrl = snapshot.data!.photoUrl;
+                                  return Card(
                                     elevation: 8.0,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -71,70 +87,25 @@ class MoreScreen extends StatelessWidget {
                                                     const DoctorProfileScreen()));
                                       },
                                       title: Text(
-                                        state.user!.userName.capitalize!,
+                                        userName.capitalize!,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
                                       leading: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              state.user!.photoUrl)),
+                                          backgroundImage:
+                                              NetworkImage(photoUrl)),
                                       trailing: const Icon(
                                         Icons.edit,
                                         color: Colors.white,
                                       ),
                                     ),
                                   );
+                                });
                           },
                         ),
-                        const SizedBox(height: 10.0),
-                        // Card(
-                        //   elevation: 4.0,
-                        //   margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 16.0),
-                        //   shape: RoundedRectangleBorder(
-                        //       borderRadius: BorderRadius.circular(10.0)),
-                        //   child: Column(
-                        //     children: <Widget>[
-                        //       ListTile(
-                        //         leading: Icon(
-                        //           Icons.lock_outline,
-                        //           color: Colors.purple,
-                        //         ),
-                        //         title: Text("Change Password"),
-                        //         trailing: Icon(Icons.keyboard_arrow_right),
-                        //         onTap: () {
-                        //           //open change password
-                        //         },
-                        //       ),
-                        //       _buildDivider(),
-                        //       ListTile(
-                        //         leading: Icon(
-                        //           Icons.language_outlined,
-                        //           color: Colors.purple,
-                        //         ),
-                        //         title: Text("Change Language"),
-                        //         trailing: Icon(Icons.keyboard_arrow_right),
-                        //         onTap: () {
-                        //           //open change language
-                        //         },
-                        //       ),
-                        //       _buildDivider(),
-                        //       ListTile(
-                        //         leading: Icon(
-                        //           Icons.location_on,
-                        //           color: Colors.purple,
-                        //         ),
-                        //         title: Text("Change Location"),
-                        //         trailing: Icon(Icons.keyboard_arrow_right),
-                        //         onTap: () {
-                        //           //open change location
-                        //         },
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        const SizedBox(height: 20.0),
+                        SizedBox(height: 6.h),
                         const Text(
                           "Settings",
                           style: TextStyle(
@@ -150,110 +121,91 @@ class MoreScreen extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) => AddTiming()));
                           },
-                          //  activeColor: Colors.purple,
                           contentPadding: const EdgeInsets.all(0),
-                          //value: true,
                           title: const Text("Add timing"),
                           trailing: const Icon(Icons.post_add),
-                          //onChanged: (val) {},
-                        ),
-                        const ListTile(
-                          //  activeColor: Colors.purple,
-                          contentPadding: EdgeInsets.all(0),
-                          //value: true,
-                          title: Text("Help"),
-                          //onChanged: (val) {},
                         ),
                         ListTile(
                           onTap: () {
-                            dataController.getPastApp();
+                            showAboutDialog(
+                              context: context,
+                              applicationName: 'Medoc',
+                              applicationVersion: '1.0.0',
+                              applicationIcon: Image.asset(
+                                'assets/medoc.png',
+                                width: 15.w,
+                              ),
+                            );
                           },
-                          //  activeColor: Colors.purple,
-                          contentPadding: EdgeInsets.all(0),
-                          // value: false,
+                          contentPadding: const EdgeInsets.all(0),
                           title: const Text("About"),
-                          //onChanged: null,
+                          trailing: const Icon(Icons.info_outline),
                         ),
-                        const ListTile(
-                          //activeColor: Colors.purple,
-                          contentPadding: EdgeInsets.all(0),
-                          // value: true,
-                          title: Text("Privacy Policy"),
-                          // onChanged: (val) {},
+                        ListTile(
+                          contentPadding: const EdgeInsets.all(0),
+                          title: const Text("Privacy Policy"),
+                          trailing: const Icon(Icons.privacy_tip_outlined),
+                          onTap: () {
+                            _launchUrl();
+                          },
                         ),
-                        // SwitchListTile(
-                        //   activeColor: Colors.purple,
-                        //   contentPadding: const EdgeInsets.all(0),
-                        //   value: true,
-                        //   title: Text("Received App Updates"),
-                        //   onChanged: null,
-                        // ),
                         ListTile(
                           contentPadding: const EdgeInsets.all(0),
                           title: const Text('Logout'),
-                          trailing: const Icon(Icons.logout_outlined),
+                          trailing: Icon(
+                            Icons.logout_outlined,
+                            color: kRed,
+                          ),
                           onTap: () {
-                            print('logout clicked');
-                            AuthMethods().signOut();
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LogInScreen()),
-                                (route) => false);
+                            showMyDialog(context);
                           },
                         ),
-                        const SizedBox(height: 60.0),
                       ],
                     ),
                   ),
-                  // Positioned(
-                  //   bottom: -20,
-                  //   left: -20,
-                  //   child: Container(
-                  //     width: 80,
-                  //     height: 80,
-                  //     alignment: Alignment.center,
-                  //     decoration: BoxDecoration(
-                  //       color: kBlue,
-                  //       shape: BoxShape.circle,
-                  //     ),
-                  //   ),
-                  // ),
-                  // Positioned(
-                  //   bottom: 00,
-                  //   left: 00,
-                  //   child: IconButton(
-                  //     icon: Icon(
-                  //       Icons.power_off,
-                  //       color: Colors.white,
-                  //     ),
-                  //     onPressed: () {
-                  //       //log out
-                  //     },
-                  //   ),
-                  // )
-                ],
+                 ],
               );
             } else {
-              return Container(
-                height: size * .8,
-                child: Center(
-                  child: Text('Check your connection!'),
-                ),
-              );
+              return const ConnectionLost();
             }
           }),
     );
   }
 
-  Container _buildDivider() {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-      ),
-      width: double.infinity,
-      height: 1.0,
-      color: Colors.grey.shade400,
+  Future<void> showMyDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Logout',
+            style: TextStyle(color: kRed),
+          ),
+          content: const Text('Do you want to logout ?'),
+          actions: [
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () async {
+                AuthMethods().signOut().then((value) {
+                  MainHomeScreen.selectedIndexNotifier.value = 0;
+                });
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogInScreen()),
+                    (route) => false);
+              },
+            ),
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
+
 }

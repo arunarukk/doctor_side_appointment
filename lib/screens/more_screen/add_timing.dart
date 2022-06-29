@@ -7,6 +7,7 @@ import 'package:doc_side_appoinment/utils/image_picker_method.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 
 class AddTiming extends StatelessWidget {
   AddTiming({Key? key}) : super(key: key);
@@ -24,16 +25,9 @@ class AddTiming extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('widget');
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = DateTime(now.year, now.month, now.day - 1);
-    final tomorrow = DateTime(now.year, now.month, now.day + 1);
-    final date = DateFormat('dd/MM/yyyy').format(tomorrow);
-    final size = MediaQuery.of(context).size.height;
     return Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             'Add Time',
             style: TextStyle(color: kBlack),
           ),
@@ -43,7 +37,7 @@ class AddTiming extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 color: kBlack,
               )),
@@ -57,10 +51,10 @@ class AddTiming extends StatelessWidget {
               init: StateController(),
               id: 'datetime',
               builder: (controller) {
-                print("first get");
+                // print("first get");
                 return Container(
-                    height: size * .04,
-                    width: size * .16,
+                    height: 4.h,
+                    width: 32.w,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         border: Border.all(color: kBlue, width: 1)),
@@ -78,12 +72,9 @@ class AddTiming extends StatelessWidget {
                           if (_selectedDateTemp == null) {
                             return;
                           } else {
-                            //print(_selectedDateTemp.toString());
-
                             controller.selectedDate = _selectedDateTemp;
                             controller.update(['datetime']);
                           }
-                          print('add date');
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -92,7 +83,7 @@ class AddTiming extends StatelessWidget {
                                 ? 'Select Date'
                                 : DateFormat('dd/MM/yyyy')
                                     .format(controller.selectedDate!)),
-                            Icon(Icons.add),
+                            const Icon(Icons.add),
                           ],
                         )));
               },
@@ -100,9 +91,9 @@ class AddTiming extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Container(
-                height: size * .5,
-                width: size * 1,
-                decoration: BoxDecoration(),
+                height: 26.h,
+                width: 100.w,
+                decoration: const BoxDecoration(),
                 child: Column(
                   children: [
                     Padding(
@@ -111,10 +102,9 @@ class AddTiming extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          time_button(size, stateControl.nine, '9:00 AM', nine),
-                          time_button(size, stateControl.ten, '10:00 AM', ten),
-                          time_button(
-                              size, stateControl.eleven, '11:00 AM', eleven),
+                          time_button(stateControl.nine, '9:00 AM', nine),
+                          time_button(stateControl.ten, '10:00 AM', ten),
+                          time_button(stateControl.eleven, '11:00 AM', eleven),
                         ],
                       ),
                     ),
@@ -124,12 +114,10 @@ class AddTiming extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          time_button(
-                              size, stateControl.twel, '12:00 PM', twelve),
-                          time_button(size, stateControl.one, '1:00 PM', one),
-                          time_button(size, stateControl.two, '2:00 PM', two),
-                          time_button(
-                              size, stateControl.three, '3:00 PM', three),
+                          time_button(stateControl.twel, '12:00 PM', twelve),
+                          time_button(stateControl.one, '1:00 PM', one),
+                          time_button(stateControl.two, '2:00 PM', two),
+                          time_button(stateControl.three, '3:00 PM', three),
                         ],
                       ),
                     ),
@@ -139,9 +127,9 @@ class AddTiming extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          time_button(size, stateControl.four, '4:00 PM', four),
-                          time_button(size, stateControl.five, '5:00 PM', five),
-                          time_button(size, stateControl.six, '6:00 PM', six),
+                          time_button(stateControl.four, '4:00 PM', four),
+                          time_button(stateControl.five, '5:00 PM', five),
+                          time_button(stateControl.six, '6:00 PM', six),
                         ],
                       ),
                     ),
@@ -152,8 +140,8 @@ class AddTiming extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8),
               child: Container(
-                width: size * .8,
-                child: Text(
+                width: 100.w,
+                child: const Text(
                   'Note : Once appointment placed you cannot change the schedule entirely',
                   style: TextStyle(color: Colors.grey, fontSize: 16),
                   textAlign: TextAlign.center,
@@ -161,19 +149,13 @@ class AddTiming extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: size * .06,
-              width: size * .4,
+              height: 6.h,
+              width: 80.w,
               child: ElevatedButton(
                 onPressed: () async {
-                  stateControl.checkvar;
-                  // print('----${stateControl.six}');
-                  // print(stateControl.twel);
-                  // print(stateControl.ten);
-                  // print(stateControl.four);
-
                   if (stateControl.selectedDate == null) {
+                    showSnackBar('Select date', kRed, context);
                   } else {
-                    print(stateControl.selectedDate);
                     String? isemty = await DataController()
                         .scheduleDetailsExisting(stateControl.selectedDate!);
                     if (isemty == null) {
@@ -199,7 +181,7 @@ class AddTiming extends StatelessWidget {
                     }
                   }
                 },
-                child: Text(
+                child: const Text(
                   'Add',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -215,17 +197,15 @@ class AddTiming extends StatelessWidget {
         ));
   }
 
-  GetBuilder time_button(double size, bool control, String time, bool current) {
+  GetBuilder time_button(bool control, String time, bool current) {
     return GetBuilder<StateController>(
         id: 'time_button',
         init: StateController(),
         builder: (controller) {
-          print("second get");
+          debugPrint("second get");
           return InkWell(
             onTap: () {
-              // print(controller.selectedDate);
               control = !control;
-              print(control);
               if (time == '9:00 AM') {
                 stateControl.nine = control;
               } else if (time == '10:00 AM') {
@@ -249,11 +229,10 @@ class AddTiming extends StatelessWidget {
               }
 
               controller.update(['time_button']);
-              print(controller.six);
             },
             child: Container(
-              width: size * .09,
-              height: size * .036,
+              width: 17.w,
+              height: 3.5.h,
               decoration: BoxDecoration(
                   color: control == true ? kBlue : kWhite,
                   borderRadius: BorderRadius.circular(50),
@@ -277,10 +256,10 @@ class AddTiming extends StatelessWidget {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Already exist!'),
+          title: const Text('Already exist!'),
           content: SingleChildScrollView(
             child: Column(
-              children: [
+              children: const [
                 Text('This Date is already exists.'),
                 kHeight10,
                 Text('Would you like to replace this Date?'),
@@ -289,7 +268,7 @@ class AddTiming extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              child: Text('Confirm'),
+              child: const Text('Confirm'),
               onPressed: () async {
                 bool result = await DataController().updateScheduleDetails(
                     schedule: Schedule(
@@ -318,7 +297,7 @@ class AddTiming extends StatelessWidget {
               },
             ),
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },

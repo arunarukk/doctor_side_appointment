@@ -4,16 +4,18 @@ import 'package:doc_side_appoinment/get_controller/get_controller.dart';
 import 'package:doc_side_appoinment/models/doc_appointment.dart';
 import 'package:doc_side_appoinment/resources/data_methods.dart';
 import 'package:doc_side_appoinment/screens/skeleton_screens/skeleton_patient.dart';
+import 'package:doc_side_appoinment/widgets/connection_lost.dart';
 import 'package:doc_side_appoinment/widgets/review_screen.dart';
 import 'package:doc_side_appoinment/screens/screen_home/patient_details.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../constant_value/constant_size.dart';
 
 class PatientScreen extends StatefulWidget {
-  PatientScreen({
+  const PatientScreen({
     Key? key,
   }) : super(key: key);
 
@@ -38,37 +40,16 @@ class _PatientScreenState extends State<PatientScreen>
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text(
+          title: const Text(
             'Patients',
             style: TextStyle(color: Colors.black),
           ),
           actions: [
             IconButton(
                 onPressed: () {
-                  // showModalBottomSheet<void>(
-                  //   context: context,
-                  //   builder: (BuildContext context) {
-                  //     return Container(
-                  //       height: 400,
-                  //       //color: kWhite,
-                  //       // decoration: BoxDecoration(
-                  //       //   color: kBlack,
-                  //       //   borderRadius:
-                  //       //       BorderRadius.vertical(top: Radius.circular(30)),
-                  //       // ),
-                  //       child: Center(
-                  //         child: Column(
-                  //           mainAxisAlignment: MainAxisAlignment.center,
-                  //           mainAxisSize: MainAxisSize.min,
-                  //           children: [],
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // );
                   bottom_scheet(context);
                 },
-                icon: Icon(
+                icon: const Icon(
                   Icons.filter_list_outlined,
                   color: kBlack,
                 ))
@@ -78,44 +59,34 @@ class _PatientScreenState extends State<PatientScreen>
           bottom: TabBar(
               controller: _tabController,
               indicatorWeight: 1,
-              //indicatorColor: Colors.black,
               indicatorSize: TabBarIndicatorSize.label,
               unselectedLabelColor: kBlue,
               isScrollable: true,
               labelColor: kWhite,
-              labelStyle: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              labelStyle:
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               indicator: BoxDecoration(
-                  //color: kBlue,
-                  borderRadius: BorderRadius.circular(50),
-                  color: kBlue),
+                  borderRadius: BorderRadius.circular(50), color: kBlue),
               tabs: [
-                // Tab(
-                //   text: 'Upcoming',
-                //   height: 30,
-                // ),
                 Tab(
                   child: Container(
-                    width: 100,
+                    width: 25.w,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         border: Border.all(color: kBlue, width: 1)),
-                    child: Align(
+                    child: const Align(
                       alignment: Alignment.center,
                       child: Text("Upcoming"),
                     ),
                   ),
                 ),
-                // Tab(
-                //   text: 'Past',
-                //   height: 30,
-                // ),
                 Tab(
                   child: Container(
-                    width: 100,
+                    width: 25.w,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
                         border: Border.all(color: kBlue, width: 1)),
-                    child: Align(
+                    child: const Align(
                       alignment: Alignment.center,
                       child: Text("Past"),
                     ),
@@ -130,50 +101,40 @@ class _PatientScreenState extends State<PatientScreen>
   }
 
   Future<void> bottom_scheet(BuildContext context) {
-    final size = MediaQuery.of(context).size.height;
     return showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
         return Container(
-          height: size * .2,
-          width: size * .1,
-
-          // color: kBlue,
-          // decoration: BoxDecoration(
-          //   color: kBlack,
-          //   borderRadius:
-          //       BorderRadius.vertical(top: Radius.circular(30)),
-          // ),
+          height: 20.h,
+          width: 1.w,
           child: GetBuilder<StateController>(
             init: StateController(),
             id: 'filter',
             builder: (filter) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                // mainAxisSize: MainAxisSize.min,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-
                 children: [
                   Row(
                     children: [
                       Container(
-                          width: size * .34,
-                          // color: kBlack,
+                          width: 70.w,
                           child: ListTile(
-                            title: Text('Date range'),
+                            title: const Text('Date range'),
                             onTap: () async {
                               await pickDateRange(context);
-                              //  print(dateRange!.start);
                             },
                           )),
                       dateRange == null
                           ? Container()
                           : Text(
                               '${filter.selectedStartDate}  - ${filter.selectedEndDate}',
-                              style: TextStyle(color: Colors.black),
-                              // _selectedDate.toString(),
+                              style: const TextStyle(color: Colors.black),
                             ),
                     ],
+                  ),
+                  Text(
+                    'Filter for past',
+                    style: TextStyle(color: Colors.grey.shade300),
                   )
                 ],
               );
@@ -187,7 +148,7 @@ class _PatientScreenState extends State<PatientScreen>
   Future pickDateRange(BuildContext context) async {
     final initialDateRange = DateTimeRange(
       start: DateTime.now(),
-      end: DateTime.now().add(Duration(hours: 24 * 3)),
+      end: DateTime.now().add(const Duration(hours: 24 * 3)),
     );
     final newDateRange = await showDateRangePicker(
       context: context,
@@ -203,9 +164,7 @@ class _PatientScreenState extends State<PatientScreen>
               surface: kBlue,
               onSurface: kWhite,
             ),
-
-            // Here I Chaged the overline to my Custom TextStyle.
-            textTheme: TextTheme(overline: TextStyle(fontSize: 16)),
+            textTheme: const TextTheme(overline: TextStyle(fontSize: 16)),
             dialogBackgroundColor: kWhite,
           ),
           child: child!,
@@ -216,15 +175,8 @@ class _PatientScreenState extends State<PatientScreen>
     if (newDateRange == null) return;
     dateRange = newDateRange;
     stateControl.dateRange(dateRange);
-    // statecontrol.update();
     dataController.dateRange = dateRange;
     dataController.update(['past']);
-
-    // setState(() {});
-
-    //print(newDateRange.start);
-    //print(dateRange);
-    // print(_selectedStartDate);
     if (dateRange != null) {}
   }
 }
@@ -240,8 +192,6 @@ class PatientList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.height;
-
     return StreamBuilder(
         stream: Connectivity().onConnectivityChanged,
         builder: (context, AsyncSnapshot<ConnectivityResult> snapshot) {
@@ -251,9 +201,9 @@ class PatientList extends StatelessWidget {
               future: dataControl.getUpcomingApp(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SkeletonPatient();
+                  return const SkeletonPatient();
                 }
-                if (snapshot.data!.isEmpty) {
+                if (snapshot.data == null || snapshot.data!.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -261,15 +211,14 @@ class PatientList extends StatelessWidget {
                         Image.asset(
                           'assets/no appointment.png',
                           scale: .8,
-                          // width: 20.h,
-                          // height: 20.h,
                         ),
-                        Text('No appointments'),
+                        const Text('No appointments'),
                       ],
                     ),
                   );
                 }
                 return ListView.separated(
+                  physics: const BouncingScrollPhysics(),
                   controller: scrollController,
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
                   itemBuilder: (ctx, index) {
@@ -280,6 +229,7 @@ class PatientList extends StatelessWidget {
                     final DateTime patientDate = data.appoDetails.date;
                     final String patientTime = data.appoDetails.time;
                     final String payment = data.appoDetails.payment;
+                    final String isCanceld = data.appoDetails.status;
                     final date = DateFormat('dd/MM/yyyy').format(patientDate);
 
                     return Card(
@@ -289,7 +239,7 @@ class PatientList extends StatelessWidget {
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: SizedBox(
-                        height: size * .14,
+                        height: 14.h,
                         child: Center(
                           child: InkWell(
                             onTap: () {
@@ -301,17 +251,8 @@ class PatientList extends StatelessWidget {
                                             data: data,
                                           )));
                             },
-                            // leading: CircleAvatar(
-                            //   radius: 40,
-                            //   backgroundColor: Colors.white,
-                            //   backgroundImage: NetworkImage(patientPhoto),
-                            // ),
-                            // //leading:,
-                            // title: Text(patientName.capitalize!),
-                            // subtitle: Text(patientAge),
                             child: Row(
                               children: [
-                                //kWidth10,
                                 Padding(
                                   padding: const EdgeInsets.all(6.0),
                                   child: ClipRRect(
@@ -319,11 +260,11 @@ class PatientList extends StatelessWidget {
                                         left: Radius.circular(15.0),
                                         right: Radius.circular(15.0)),
                                     child: SizedBox(
-                                      width: size * .12,
+                                      width: 25.w,
                                       child: FittedBox(
                                           fit: BoxFit.cover,
                                           child: Image.network(patientPhoto)),
-                                      height: size * .12,
+                                      height: 25.h,
                                     ),
                                   ),
                                 ),
@@ -334,48 +275,77 @@ class PatientList extends StatelessWidget {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Container(
-                                      width: size * .26,
+                                      width: 54.w,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Row(
                                             children: [
-                                              Text(
-                                                'Name : ',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: kBlue),
-                                              ),
-                                              Text(
-                                                patientName.capitalize!,
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: kBlue),
+                                              SizedBox(
+                                                width: 14.w,
+                                                child: Text(
+                                                  patientName.capitalize!,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: kBlue),
+                                                ),
                                               ),
                                             ],
                                           ),
-                                          Container(
-                                            height: size * .03,
-                                            width: size * .11,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromARGB(
-                                                  255, 21, 166, 26),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            child: Center(
-                                                child: Text(payment,
-                                                    style: TextStyle(
-                                                        color: kWhite,
-                                                        fontSize: 12))),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                height: 3.h,
+                                                width: 21.w,
+                                                decoration: BoxDecoration(
+                                                  color: payment !=
+                                                          'Pay on hand'
+                                                      ? const Color.fromARGB(
+                                                          255, 21, 166, 26)
+                                                      : const Color.fromARGB(
+                                                          255, 220, 199, 18),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                                child: Center(
+                                                    child: Text(payment,
+                                                        style: const TextStyle(
+                                                            color: kWhite,
+                                                            fontSize: 12))),
+                                              ),
+                                              SizedBox(
+                                                height: .5.h,
+                                              ),
+                                              isCanceld == 'canceled'
+                                                  ? Container(
+                                                      height: 3.h,
+                                                      width: 21.w,
+                                                      decoration: BoxDecoration(
+                                                        color: kRed,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                      ),
+                                                      child: const Center(
+                                                          child: Text(
+                                                              'Canceled',
+                                                              style: TextStyle(
+                                                                  color: kWhite,
+                                                                  fontSize:
+                                                                      12))),
+                                                    )
+                                                  : Container(),
+                                            ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                    //kHeight10,
                                     Row(
                                       children: [
                                         Text(
@@ -397,16 +367,15 @@ class PatientList extends StatelessWidget {
                                       ],
                                     ),
                                     Container(
-                                      width: size * .26,
+                                      width: 53.w,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Container(
-                                            height: size * .03,
-                                            width: size * .12,
+                                            height: 3.h,
+                                            width: 21.w,
                                             decoration: BoxDecoration(
-                                              //color: kBlue,
                                               border: Border.all(
                                                   color: kBlue, width: 1),
                                               borderRadius:
@@ -414,13 +383,10 @@ class PatientList extends StatelessWidget {
                                             ),
                                             child: Center(child: Text(date)),
                                           ),
-                                          // kWidth20,
-                                          // Spacer(),
                                           Container(
-                                            height: size * .03,
-                                            width: size * .09,
+                                            height: 3.h,
+                                            width: 20.w,
                                             decoration: BoxDecoration(
-                                                // color: kBlue,
                                                 borderRadius:
                                                     BorderRadius.circular(8.0),
                                                 border: Border.all(
@@ -442,8 +408,8 @@ class PatientList extends StatelessWidget {
                     );
                   },
                   separatorBuilder: (ctx, index) {
-                    return const SizedBox(
-                      height: 5,
+                    return SizedBox(
+                      height: 5.h,
                     );
                   },
                   itemCount: snapshot.data!.length,
@@ -451,12 +417,7 @@ class PatientList extends StatelessWidget {
               },
             );
           } else {
-            return Container(
-              height: size * .8,
-              child: Center(
-                child: Text('Check your connection!'),
-              ),
-            );
+            return const ConnectionLost();
           }
         });
   }

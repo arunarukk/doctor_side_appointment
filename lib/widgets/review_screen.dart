@@ -5,9 +5,11 @@ import 'package:doc_side_appoinment/models/doc_appointment.dart';
 import 'package:doc_side_appoinment/resources/data_methods.dart';
 import 'package:doc_side_appoinment/screens/review_details.dart';
 import 'package:doc_side_appoinment/screens/skeleton_screens/skeleton_review.dart';
+import 'package:doc_side_appoinment/widgets/connection_lost.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:sizer/sizer.dart';
 
 class ReviewScreen extends StatelessWidget {
   ReviewScreen({
@@ -34,27 +36,25 @@ class ReviewScreen extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return SkeletonReview();
+                          return const SkeletonReview();
                         }
                         if (snapshot.data!.isEmpty) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              //crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Image.asset(
                                   'assets/no appointment.png',
                                   scale: .8,
-                                  // width: 20.h,
-                                  // height: 20.h,
                                 ),
-                                Text('No appointments'),
+                                const Text('No appointments'),
                               ],
                             ),
                           );
                         }
 
                         return ListView.separated(
+                            physics: const BouncingScrollPhysics(),
                             controller: scrollController,
                             padding: const EdgeInsets.only(
                                 left: 20, right: 20, top: 10),
@@ -62,22 +62,13 @@ class ReviewScreen extends StatelessWidget {
                               final data = snapshot.data![index];
                               final photo = data.appoDetails.photoUrl;
                               final name = data.appoDetails.name;
-                              final phone = data.appoDetails.phoneNumber;
-                              final age = data.appoDetails.age;
-                              final gender = data.appoDetails.gender;
                               final review = data.appoDetails.review;
                               final rating = data.appoDetails.rating;
-
-                              //print(rating);
 
                               return Card(
                                 elevation: 0,
                                 color: Colors.grey.shade100,
                                 shape: RoundedRectangleBorder(
-                                  // side: BorderSide(
-                                  //     color: kBlue,
-                                  //     width: .4,
-                                  //     style: BorderStyle.solid),
                                   borderRadius: BorderRadius.circular(15.0),
                                 ),
                                 child: SizedBox(
@@ -93,15 +84,8 @@ class ReviewScreen extends StatelessWidget {
                                                       data: data,
                                                     )));
                                       },
-                                      // leading: CircleAvatar(
-                                      //   radius: 40,
-                                      //   backgroundColor: Colors.white,
-                                      //   backgroundImage: NetworkImage(photo),
-                                      // ),
-
                                       child: Row(
                                         children: [
-                                          //kWidth10,
                                           Padding(
                                             padding: const EdgeInsets.all(6.0),
                                             child: ClipRRect(
@@ -128,25 +112,21 @@ class ReviewScreen extends StatelessWidget {
                                             children: [
                                               Row(
                                                 children: [
-                                                  Text(
-                                                    'Name : ',
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: kBlue),
-                                                  ),
-                                                  Text(
-                                                    name.capitalize!,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: kBlue),
+                                                  SizedBox(
+                                                    width: size * .25,
+                                                    child: Text(
+                                                      name.capitalize!,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: kBlue),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                              //kHeight10,
                                               Row(
                                                 children: [
                                                   Text(
@@ -157,30 +137,30 @@ class ReviewScreen extends StatelessWidget {
                                                             FontWeight.w400,
                                                         color: kBlue),
                                                   ),
-                                                  Text(
-                                                    review,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        color: kBlue),
-                                                    overflow: TextOverflow.fade,
-                                                    maxLines: 2,
+                                                  SizedBox(
+                                                    width: size * .17,
+                                                    child: Text(
+                                                      review,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: kBlue),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                              //  kHeight10,
                                               RatingBar.builder(
                                                 itemSize: 20,
                                                 initialRating: rating,
                                                 minRating: 1,
                                                 direction: Axis.horizontal,
-                                                // allowHalfRating: true,
                                                 itemCount: 5,
-                                                // itemPadding: EdgeInsets.symmetric(
-                                                //     horizontal: 1.0),
                                                 itemBuilder: (context, _) =>
-                                                    Icon(
+                                                    const Icon(
                                                   Icons.star,
                                                   color: Colors.amber,
                                                 ),
@@ -196,8 +176,8 @@ class ReviewScreen extends StatelessWidget {
                               );
                             },
                             separatorBuilder: (ctx, index) {
-                              return const SizedBox(
-                                height: 5,
+                              return SizedBox(
+                                height: 1.h,
                               );
                             },
                             itemCount: snapshot.data!.length);
@@ -205,12 +185,7 @@ class ReviewScreen extends StatelessWidget {
                 },
               );
             } else {
-              return Container(
-                height: size * .8,
-                child: Center(
-                  child: Text('Check your connection!'),
-                ),
-              );
+              return const ConnectionLost();
             }
           }),
     );

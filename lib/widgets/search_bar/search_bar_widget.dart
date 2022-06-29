@@ -13,7 +13,7 @@ class SearchBar extends StatelessWidget {
       child: TextField(
         onChanged: (value) {
           dataController.queryData(value);
-          if (value.isEmpty || value == null) {
+          if ( value == null|| value.isEmpty ) {
             dataController.querySelec = false;
           } else {
             dataController.querySelec = true;
@@ -22,14 +22,14 @@ class SearchBar extends StatelessWidget {
         },
         decoration: InputDecoration(
           hintText: 'Search',
-          prefixIcon: Icon(Icons.search_outlined),
+          prefixIcon: const Icon(Icons.search_outlined),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50.0),
             borderSide: BorderSide(color: kBlue),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50.0),
-            borderSide: BorderSide(color: Colors.grey),
+            borderSide: const BorderSide(color: Colors.grey),
           ),
         ),
       ),

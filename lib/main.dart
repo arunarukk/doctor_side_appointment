@@ -2,12 +2,15 @@ import 'package:doc_side_appoinment/constant_value/constant_colors.dart';
 import 'package:doc_side_appoinment/resources/push_notification.dart';
 import 'package:doc_side_appoinment/screens/authentication_screens/log_in.dart';
 import 'package:doc_side_appoinment/screens/main_screen_home/main_home_screen.dart';
+import 'package:doc_side_appoinment/splash_screen/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sizer/sizer.dart';
 
 final notifyC = NotificationControl();
+GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -33,16 +36,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // StateController().refreshUser();
     return Sizer(
-        builder: ((context, orientation, deviceType) => MaterialApp(
+        builder: ((context, orientation, deviceType) => GetMaterialApp(
+              navigatorKey: navigatorKey,
               title: 'Flutter Demo',
               theme: ThemeData(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 scaffoldBackgroundColor: kWhite,
-                appBarTheme: AppBarTheme(
+                appBarTheme: const AppBarTheme(
                   backgroundColor: Colors.transparent,
                 ),
                 primarySwatch: Colors.blue,
@@ -50,9 +53,13 @@ class _MyAppState extends State<MyApp> {
               home: StreamBuilder(
                 stream: FirebaseAuth.instance.authStateChanges(),
                 builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const SplashScreen();
+                  }
+
                   if (snapshot.connectionState == ConnectionState.active) {
                     if (snapshot.hasData) {
-                      return MainHomeScreen();
+                      return const MainHomeScreen();
                     } else if (snapshot.hasError) {
                       return Center(
                         child: Text('${snapshot.error}'),
@@ -61,13 +68,7 @@ class _MyAppState extends State<MyApp> {
                       return LogInScreen();
                     }
                   }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        color: kBlack,
-                      ),
-                    );
-                  }
+
                   return LogInScreen();
                 },
               ),

@@ -1,11 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_side_appoinment/constant_value/constant_colors.dart';
 import 'package:doc_side_appoinment/constant_value/constant_size.dart';
 import 'package:doc_side_appoinment/models/doc_appointment.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../chat_screen/chat_screen.dart';
 
 class PatientAppointmentScreen extends StatelessWidget {
   PatientAppointmentScreen({Key? key, this.data}) : super(key: key);
@@ -14,8 +16,6 @@ class PatientAppointmentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final args = ModalRoute.of(context)!.settings.arguments as Doctor;
-
     final photoUrl = data!.appoDetails.photoUrl;
     final patientName = data!.appoDetails.name;
     final patientAge = data!.appoDetails.age;
@@ -24,13 +24,14 @@ class PatientAppointmentScreen extends StatelessWidget {
     final bookingDate = data!.appoDetails.date;
     final payment = data!.appoDetails.payment;
     final phonenumber = data!.appoDetails.phoneNumber;
-    print(bookingDate);
+    final String isCanceled = data!.appoDetails.status;
+    final patientId = data!.appoDetails.patientId;
+
     final date = DateFormat('dd/MM/yyyy').format(bookingDate);
 
-    final size = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Patient Profile',
           style: TextStyle(color: kBlack),
         ),
@@ -38,63 +39,31 @@ class PatientAppointmentScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
             onPressed: () {
-              // final doctor = FirebaseAuth.instance.currentUser;
-              // print(doctor!.displayName);
               Navigator.pop(context);
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               color: kBlack,
             )),
-        //automaticallyImplyLeading: true,
       ),
       body: Container(
-        // decoration: const BoxDecoration(
-        //     gradient: LinearGradient(
-        //         begin: Alignment.topLeft,
-        //         end: Alignment.bottomRight,
-        //         colors: [
-        //       Color.fromARGB(255, 0, 162, 255),
-        //       Color.fromARGB(255, 60, 39, 176)
-        //     ])),
         height: double.infinity,
         width: double.infinity,
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Hero(
-              //   tag: 'assets/lukman.jpeg',
-              //   child: Material(
-              //       type: MaterialType.transparency,
-              //       child: Container(
-              //         alignment: Alignment.topCenter,
-              //         height: size * .5,
-              //         decoration: BoxDecoration(
-              //           borderRadius: BorderRadius.only(
-              //               bottomLeft: Radius.circular(50),
-              //               bottomRight: Radius.circular(50)),
-              //           color: kGrey,
-              //           image: DecorationImage(
-              //             fit: BoxFit.cover,
-              //             image: AssetImage(
-              //               'assets/lukman.jpeg',
-              //             ),
-              //           ),
-              //         ),
-              //       )),
-              // ),
               Stack(
                 children: [
                   Container(
                     color: kGrey,
-                    height: size * .3,
+                    height: 40.h,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          height: size * .3,
-                          width: size * .2,
+                          height: 40.h,
+                          width: 80.w,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: kGrey,
@@ -109,20 +78,35 @@ class PatientAppointmentScreen extends StatelessWidget {
                   ),
                   Positioned(
                     child: Container(
-                      height: 25,
-                      width: 90,
+                      height: 3.5.h,
+                      width: 24.w,
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 21, 166, 26),
-                        //borderRadius: BorderRadius.circular(8.0),
+                        color: payment != 'Pay on hand'
+                            ? const Color.fromARGB(255, 21, 166, 26)
+                            : const Color.fromARGB(255, 220, 199, 18),
                       ),
                       child: Center(
-                          child:
-                              Text(payment, style: TextStyle(color: kWhite))),
+                          child: Text(payment,
+                              style: const TextStyle(color: kWhite))),
                     ),
                   ),
+                  isCanceled == 'canceled'
+                      ? Positioned(
+                          right: 0,
+                          child: Container(
+                            height: 3.5.h,
+                            width: 24.w,
+                            decoration: BoxDecoration(
+                              color: kRed,
+                            ),
+                            child: const Center(
+                                child: Text('Canceled',
+                                    style: TextStyle(color: kWhite))),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
-
               Container(
                 color: kWhite,
                 padding: const EdgeInsets.all(16),
@@ -130,91 +114,110 @@ class PatientAppointmentScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Container(
-                    //   // color: kGrey,
-                    //   height: size * 0.08,
-                    //   width: size * 0.3,
-                    //   decoration: BoxDecoration(
-                    //     // color: kBlue,
-                    //     borderRadius: BorderRadius.circular(8),
-                    //   ),
-                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Column(
-                          //mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   "Name :  ",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    // color: kWhite,
                                   ),
                                 ),
-                                Text(
-                                  patientName,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    // color: kWhite,
+                                SizedBox(
+                                  width: 50.w,
+                                  child: Text(
+                                    patientName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 8,
+                            SizedBox(
+                              height: 2.h,
                             ),
                             Row(
                               children: [
-                                Text(
+                                const Text(
                                   'Age :     ',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    // color: kWhite,
                                   ),
                                 ),
                                 Text(patientAge,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 16,
-                                      //color: kWhite,
                                     )),
                               ],
                             ),
                           ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            launchUrl(Uri(scheme: 'tel', path: phonenumber));
-                          },
-                          child: Container(
-                            height: size * .06,
-                            width: size * .06,
-                            decoration: BoxDecoration(
-                              color: kGreen,
-                              borderRadius: BorderRadius.circular(12),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatScreen(
+                                            patientId: patientId,
+                                            patientName: patientName,
+                                            patientImage: photoUrl)));
+                              },
+                              child: Container(
+                                height: 6.h,
+                                width: 12.w,
+                                decoration: BoxDecoration(
+                                  color: Colors.yellow.shade700,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.chat,
+                                  color: kWhite,
+                                ),
+                              ),
                             ),
-                            child: Icon(
-                              Icons.call,
-                              color: kWhite,
+                            SizedBox(
+                              width: 1.w,
                             ),
-                          ),
-                        ),
+                            InkWell(
+                              onTap: () {
+                                launchUrl(
+                                    Uri(scheme: 'tel', path: phonenumber));
+                              },
+                              child: Container(
+                                height: 6.h,
+                                width: 12.w,
+                                decoration: BoxDecoration(
+                                  color: kGreen,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(
+                                  Icons.call,
+                                  color: kWhite,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
-
                     kHeight10,
-                    Divider(
+                    const Divider(
                       thickness: 0.5,
                       color: kBlack,
                     ),
-                    //kHeight10,
-                    Text('Booking Date and Time',
+                    const Text('Booking Date and Time',
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                     kHeight20,
@@ -222,52 +225,50 @@ class PatientAppointmentScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Container(
-                          height: 30,
-                          width: 120,
+                          height: 4.h,
+                          width: 25.w,
                           decoration: BoxDecoration(
-                            //color: kBlue,
                             border: Border.all(color: kBlue, width: 1),
-                            borderRadius: BorderRadius.circular(6.0),
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
                           child: Center(
                               child: Text(
                             date,
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           )),
                         ),
                         kWidth10,
                         Container(
-                          height: 30,
-                          width: 80,
+                          height: 4.h,
+                          width: 20.w,
                           decoration: BoxDecoration(
-                              // color: kBlue,
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(20.0),
                               border: Border.all(color: kBlue, width: 1)),
                           child: Center(
                               child: Text(
                             time,
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           )),
                         ),
                       ],
                     ),
                     kHeight10,
-                    Divider(
+                    const Divider(
                       thickness: .5,
                       color: kBlack,
                     ),
-                    Text('Description',
+                    const Text('Description',
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                     kHeight20,
                     Text(patientProb,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 6,
-                        style: TextStyle(fontSize: 16)),
-                    const SizedBox(
-                      height: 16,
+                        style: const TextStyle(fontSize: 16)),
+                    SizedBox(
+                      height: 6.h,
                     ),
-                    Divider(
+                    const Divider(
                       thickness: .5,
                       color: kBlack,
                     ),

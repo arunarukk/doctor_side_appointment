@@ -11,12 +11,7 @@ class NotificationControl {
   late AndroidNotificationChannel channel;
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  // sayHi() async {
-  //   final token = await FirebaseMessaging.instance.getToken();
-  //   sendPushMessage("hi", "hello", token!);
-  // }
-
-  void requestPermission() async {
+ void requestPermission() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
     NotificationSettings settings = await messaging.requestPermission(
@@ -30,12 +25,12 @@ class NotificationControl {
     );
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
+      debugPrint('User granted permission');
     } else if (settings.authorizationStatus ==
         AuthorizationStatus.provisional) {
-      print('User granted provisional permission');
+      debugPrint('User granted provisional permission');
     } else {
-      print('User declined or has not accepted permission');
+      debugPrint('User declined or has not accepted permission');
     }
   }
 
@@ -83,6 +78,7 @@ class NotificationControl {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
+    
         flutterLocalNotificationsPlugin.show(
           notification.hashCode,
           notification.title,
@@ -92,15 +88,15 @@ class NotificationControl {
               channel.id,
               channel.name,
               icon: 'launch_background',
-            ),
+            )
           ),
         );
       }
     });
+     
   }
 
   void sendPushMessage(String body, String title, String fcmToken) async {
-    print("111 fcm TOken $fcmToken body $body title $title");
     try {
       await http.post(
         Uri.parse('https://fcm.googleapis.com/fcm/send'),
@@ -116,14 +112,50 @@ class NotificationControl {
             'data': <String, dynamic>{
               'click_action': 'FLUTTER_NOTIFICATION_CLICK',
               'id': '1',
-              'status': 'done'
+              'status': 'done',
+              'screen': 'screen2'
             },
             "to": fcmToken,
           },
         ),
       );
     } catch (e) {
-      print("error push notification");
+      debugPrint("error push notification");
     }
   }
+
+  void sendChatPushMessage(String body, String title, String fcmToken) async {
+   try {
+       final FirebaseAuth _auth = FirebaseAuth.instance;
+             User currentUse = _auth.currentUser!;
+           final uId =   currentUse.uid;
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization':
+              'key=AAAAqdGrDb4:APA91bFh2FNgPJ6Msk2INB0M-gyVXE8ooxGjPIkjxQMIjEpsd65yG_Jvu1Pu1Wx8j2j0eN73HTUW-tbPuupIx9nfAYBxNx-EZjwtYMzPc-H7Nex3o5Fb4OO8wtjA-D9cIdcak5ooLquc',
+        },
+        body: jsonEncode(
+          <String, dynamic>{
+           
+            'notification': <String, dynamic>{'body': body, 'title': title},
+            'priority': 'high',
+            'data': <String, dynamic>{
+              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+              'id': '1',
+              'status': 'done',
+              'docId': uId,
+              'screen':'chatScreen',
+            },
+            "to": fcmToken,
+          },
+        ),
+      );
+
+    } catch (e) {
+      debugPrint("error push notification $e");
+    }
+  }
+  
 }

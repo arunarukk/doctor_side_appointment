@@ -15,7 +15,6 @@ class AppointmentWidget extends StatelessWidget {
 
   final ScrollController scrollController = ScrollController();
 
-  //final doctor = FirebaseAuth.instance.currentUser;
   final dataControl = Get.put(DataController());
 
   @override
@@ -30,11 +29,10 @@ class AppointmentWidget extends StatelessWidget {
                 future: upComing.searchResult(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionStatus.closed) {
-                    return Text('data');
+                    return const Text('data');
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SkeletonHome();
-                    //  Center(child: CircularProgressIndicator());
+                    return const SkeletonHome();
                   }
                   if (snapshot.data == null || snapshot.data!.isEmpty) {
                     return Column(
@@ -43,22 +41,20 @@ class AppointmentWidget extends StatelessWidget {
                         Image.asset(
                           'assets/no appointment.png',
                           scale: .8,
-                          // width: 20.h,
-                          // height: 20.h,
                         ),
-                        Text('No appointments'),
+                        const Text('No appointments'),
                       ],
                     );
                   }
                   // print('999999999${snapshot.data}');
                   return ListView.separated(
+                    physics: const BouncingScrollPhysics(),
                     controller: scrollController,
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, top: 10),
                     itemBuilder: (ctx, index) {
                       final String patientPhoto =
                           snapshot.data![index].appoDetails.photoUrl;
-                      print(patientPhoto);
                       final String patientName =
                           snapshot.data![index].appoDetails.name;
                       final String patientAge =
@@ -69,9 +65,12 @@ class AppointmentWidget extends StatelessWidget {
                           snapshot.data![index].appoDetails.payment;
                       final String time =
                           snapshot.data![index].appoDetails.time;
+                      final String isCanceled =
+                          snapshot.data![index].appoDetails.status;
                       final date = DateFormat('dd/MM/yyyy').format(patientDate);
                       return Card(
-                        color: kWhite,
+                        elevation: 0,
+                        color: Colors.grey.shade100,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),
@@ -80,7 +79,6 @@ class AppointmentWidget extends StatelessWidget {
                           width: double.infinity,
                           child: InkWell(
                             onTap: (() {
-                              //print(doctor!.email);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -88,23 +86,10 @@ class AppointmentWidget extends StatelessWidget {
                                           PatientAppointmentScreen(
                                             data: snapshot.data![index],
                                           )));
+                              FocusManager.instance.primaryFocus?.unfocus();
                             }),
                             child: Row(
-                              // crossAxisAlignment: CrossAxisAlignment.center,
-                              // mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Container(
-                                //   height: 90,
-                                //   width:80,
-                                //   decoration: BoxDecoration(
-                                //     // color: kBlue,
-                                //     borderRadius: BorderRadius.circular(6.0),
-                                //   ),
-                                //   child: Image.asset(
-                                //     'assets/lukman.jpeg',
-                                //     fit: BoxFit.cover,
-                                //   ),
-                                // ),
                                 ClipRRect(
                                   borderRadius: const BorderRadius.horizontal(
                                       left: Radius.circular(15)),
@@ -122,7 +107,6 @@ class AppointmentWidget extends StatelessWidget {
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // kHeight10,
                                     SizedBox(
                                       width: size * .27,
                                       child: Row(
@@ -132,36 +116,70 @@ class AppointmentWidget extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Column(
-                                            // mainAxisAlignment: MainAxisAlignment.center,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(patientName.capitalize!),
+                                              SizedBox(
+                                                  width: size * .15,
+                                                  child: Text(
+                                                    patientName.capitalize!,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  )),
                                               kHeight10,
                                               Text('Age :$patientAge'),
-                                              //kHeight10,
                                             ],
                                           ),
-                                          Container(
-                                            height: size * .03,
-                                            width: size * .11,
-                                            decoration: BoxDecoration(
-                                              color: Color.fromARGB(
-                                                  255, 21, 166, 26),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            child: Center(
-                                                child: Text(payment,
-                                                    style: TextStyle(
-                                                        color: kWhite,
-                                                        fontSize: 12))),
-                                          ),
+                                          Column(
+                                            children: [
+                                              Container(
+                                                height: size * .03,
+                                                width: size * .11,
+                                                decoration: BoxDecoration(
+                                                  color: payment !=
+                                                          'Pay on hand'
+                                                      ? const Color.fromARGB(
+                                                          255, 21, 166, 26)
+                                                      : const Color.fromARGB(
+                                                          255, 220, 199, 18),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                                child: Center(
+                                                    child: Text(payment,
+                                                        style: const TextStyle(
+                                                            color: kWhite,
+                                                            fontSize: 12))),
+                                              ),
+                                              SizedBox(
+                                                height: .5.h,
+                                              ),
+                                              isCanceled == 'canceled'
+                                                  ? Container(
+                                                      height: size * .03,
+                                                      width: size * .11,
+                                                      decoration: BoxDecoration(
+                                                        color: kRed,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8.0),
+                                                      ),
+                                                      child: const Center(
+                                                          child: Text(
+                                                              'Canceled',
+                                                              style: TextStyle(
+                                                                  color: kWhite,
+                                                                  fontSize:
+                                                                      12))),
+                                                    )
+                                                  : Container(),
+                                            ],
+                                          )
                                         ],
                                       ),
                                     ),
                                     Container(
-                                      //color: kBlue,s
                                       width: size * .27,
                                       child: Padding(
                                         padding: const EdgeInsets.only(top: 15),
@@ -170,10 +188,9 @@ class AppointmentWidget extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Container(
-                                              height: 25,
-                                              width: 100,
+                                              height: 3.5.h,
+                                              width: 25.w,
                                               decoration: BoxDecoration(
-                                                //color: kBlue,
                                                 border: Border.all(
                                                     color: kBlue, width: 1),
                                                 borderRadius:
@@ -181,13 +198,10 @@ class AppointmentWidget extends StatelessWidget {
                                               ),
                                               child: Center(child: Text(date)),
                                             ),
-                                            // kWidth20,
-                                            // Spacer(),
                                             Container(
-                                              height: 25,
-                                              width: 70,
+                                              height: 3.5.h,
+                                              width: 18.w,
                                               decoration: BoxDecoration(
-                                                  // color: kBlue,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           8.0),
@@ -199,7 +213,6 @@ class AppointmentWidget extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    // kHeight10
                                   ],
                                 ),
                               ],
@@ -209,8 +222,8 @@ class AppointmentWidget extends StatelessWidget {
                       );
                     },
                     separatorBuilder: (ctx, index) {
-                      return const SizedBox(
-                        height: 5,
+                      return SizedBox(
+                        height: 1.h,
                       );
                     },
                     itemCount: snapshot.data!.length,
